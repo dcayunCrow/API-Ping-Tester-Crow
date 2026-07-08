@@ -105,7 +105,8 @@ export default function App() {
     
     try {
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY || ""; // Se provee en local por .env, o en producción en tiempo de ejecución
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+      const apiUrl = import.meta.env.VITE_GEMINI_API_URL || "";
+      const url = `${apiUrl}?key=${apiKey}`;
       
       const payload = {
         contents: [{
@@ -164,7 +165,8 @@ export default function App() {
     
     try {
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY || ""; 
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+      const apiUrl = import.meta.env.VITE_GEMINI_API_URL || "";
+      const url = `${apiUrl}?key=${apiKey}`;
       
       const prompt = `Analiza el siguiente error de una petición HTTP a una API y explica de forma breve y amigable (en español) por qué podría estar ocurriendo y cómo solucionarlo.
       
