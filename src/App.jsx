@@ -109,7 +109,7 @@ export default function App() {
       //const url = `${apiUrl}?key=${apiKey}`;
 
       // AQUÍ ESTÁ EL CAMBIO: Llamamos a nuestra propia API y le pasamos el modelo
-      const url = `/api/gemini?model=gemini-2.0-flash-lite`;
+      const url = `/api/gemini?model=gemini-2.5-flash-lite`;
       
       const payload = {
         contents: [{
@@ -172,7 +172,7 @@ export default function App() {
       //const url = `${apiUrl}?key=${apiKey}`;
 
       // AQUÍ ESTÁ EL CAMBIO: Llamamos a nuestra propia API y le pasamos el modelo
-      const url = `/api/gemini?model=gemini-2.0-flash-lite`;
+      const url = `/api/gemini?model=gemini-2.5-flash-lite`;
       
       const prompt = `Analiza el siguiente error de una petición HTTP a una API y explica de forma breve y amigable (en español) por qué podría estar ocurriendo y cómo solucionarlo.
       
