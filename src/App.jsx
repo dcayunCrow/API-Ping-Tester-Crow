@@ -386,7 +386,7 @@ export default function App() {
                 const hasError = ep.status === 'ERR' || (typeof ep.status === 'number' && ep.status >= 400);
                 
                 return (
-                  <li key={ep.id} className="p-4 hover:bg-[#212328]/50 transition-colors group flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <li key={ep.id} className="p-4 hover:bg-[#212328]/50 transition-colors group flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-col">
                     
                     {/* Info del Endpoint */}
                     {isEditing ? (
@@ -424,7 +424,7 @@ export default function App() {
                     )}
 
                     {/* Resultados y Acciones */}
-                    <div className="flex items-center gap-4 ml-6 sm:ml-0">
+                    <div className="flex items-center gap-4 ml-6 sm:ml-0 ml-[-1rem]">
                       {/* Badge de Status */}
                       {!isEditing && (
                         <div className="flex items-center gap-3 min-w-[140px] justify-end">
