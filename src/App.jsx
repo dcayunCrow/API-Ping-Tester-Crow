@@ -424,7 +424,7 @@ export default function App() {
                     )}
 
                     {/* Resultados y Acciones */}
-                    <div className="flex items-center gap-4 ml-6 sm:ml-0 ml-[-1rem]">
+                    <div className="flex items-center gap-4 ml-6 sm:ml-0 ml-[-2rem]">
                       {/* Badge de Status */}
                       {!isEditing && (
                         <div className="flex items-center gap-3 min-w-[140px] justify-end">
