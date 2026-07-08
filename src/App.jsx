@@ -106,7 +106,10 @@ export default function App() {
     try {
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY || ""; // Se provee en local por .env, o en producción en tiempo de ejecución
       const apiUrl = import.meta.env.VITE_GEMINI_API_URL || "";
-      const url = `${apiUrl}?key=${apiKey}`;
+      //const url = `${apiUrl}?key=${apiKey}`;
+
+      // AQUÍ ESTÁ EL CAMBIO: Llamamos a nuestra propia API y le pasamos el modelo
+      const url = `/api/gemini?model=gemini-2.0-flash-lite`;
       
       const payload = {
         contents: [{
@@ -164,9 +167,12 @@ export default function App() {
     setAiAnalysis(null);
     
     try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || ""; 
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || ""; // Se provee en local por .env, o en producción en tiempo de ejecución
       const apiUrl = import.meta.env.VITE_GEMINI_API_URL || "";
-      const url = `${apiUrl}?key=${apiKey}`;
+      //const url = `${apiUrl}?key=${apiKey}`;
+
+      // AQUÍ ESTÁ EL CAMBIO: Llamamos a nuestra propia API y le pasamos el modelo
+      const url = `/api/gemini?model=gemini-2.0-flash-lite`;
       
       const prompt = `Analiza el siguiente error de una petición HTTP a una API y explica de forma breve y amigable (en español) por qué podría estar ocurriendo y cómo solucionarlo.
       
