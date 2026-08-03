@@ -3,6 +3,11 @@ import { Plus, Play, Trash2, Activity, AlertCircle, RefreshCw, CheckCircle2, XCi
 
 export default function App() {
   const [baseUrl, setBaseUrl] = useState('');
+  const [customHeaders, setCustomHeaders] = useState([
+    { id: crypto.randomUUID(), key: 'ngrok-skip-browser-warning', value: '1' }
+  ]);
+  const [newHeaderKey, setNewHeaderKey] = useState('');
+  const [newHeaderValue, setNewHeaderValue] = useState('');
   const [newPath, setNewPath] = useState('');
   const [endpointDetails, setEndpointDetails] = useState(null);
   
@@ -27,6 +32,23 @@ export default function App() {
       url = url.slice(0, -1);
     }
     setBaseUrl(url);
+  };
+
+  // Agregar un nuevo header personalizado
+  const handleAddHeader = (e) => {
+    e.preventDefault();
+    if (!newHeaderKey.trim()) return;
+    setCustomHeaders(prev => [
+      ...prev,
+      { id: crypto.randomUUID(), key: newHeaderKey.trim(), value: newHeaderValue.trim() }
+    ]);
+    setNewHeaderKey('');
+    setNewHeaderValue('');
+  };
+
+  // Eliminar un header personalizado
+  const handleDeleteHeader = (id) => {
+    setCustomHeaders(prev => prev.filter(h => h.id !== id));
   };
 
   // Agregar un nuevo endpoint a la lista
@@ -213,13 +235,16 @@ export default function App() {
     const fullUrl = `${baseUrl}${endpointToTest.path}`;
     const startTime = Date.now();
 
+    // Construir headers combinando los personalizados con Accept
+    const headersToSend = { 'Accept': 'application/json' };
+    customHeaders.forEach(h => {
+      if (h.key) headersToSend[h.key] = h.value;
+    });
+
     try {
-      // Usamos fetch normal. Si hay problemas de CORS, saltará al catch.
       const response = await fetch(fullUrl, { 
         method: 'GET',
-        headers: {
-          'Accept': 'application/json'
-        }
+        headers: headersToSend
       });
       
       const latency = Date.now() - startTime;
@@ -313,6 +338,58 @@ export default function App() {
             <div className="mt-4 flex items-start gap-2 text-xs text-[#F0F0F0]/70 bg-[#212328]/50 p-3 rounded-[8px] border border-[#606060]/20">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#A64CCA]" />
               <p>Asegúrate de incluir http:// o https://. Nota: Peticiones a dominios distintos pueden requerir configuración CORS en tu backend.</p>
+            </div>
+
+            {/* Headers Personalizados */}
+            <div className="mt-4 pt-4 border-t border-[#606060]/30">
+              <label className="block text-sm font-semibold text-[#F0F0F0] mb-2">Headers de la petición</label>
+
+              {/* Lista de headers activos */}
+              <div className="space-y-1.5 mb-3">
+                {customHeaders.length === 0 && (
+                  <p className="text-xs text-[#6E6E6E] italic">No hay headers configurados.</p>
+                )}
+                {customHeaders.map(h => (
+                  <div key={h.id} className="flex items-center gap-2 bg-[#212328] border border-[#606060]/30 rounded-[8px] px-3 py-1.5 group">
+                    <span className="text-xs font-mono text-[#A64CCA] shrink-0 truncate max-w-[45%]" title={h.key}>{h.key}</span>
+                    <span className="text-xs text-[#6E6E6E] shrink-0">:</span>
+                    <span className="text-xs font-mono text-[#F0F0F0] flex-1 truncate" title={h.value}>{h.value}</span>
+                    <button
+                      onClick={() => handleDeleteHeader(h.id)}
+                      className="shrink-0 p-0.5 text-[#6E6E6E] hover:text-[#ef4444] transition-colors opacity-0 group-hover:opacity-100"
+                      title="Eliminar header"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Formulario para agregar header */}
+              <form onSubmit={handleAddHeader} className="flex gap-1.5">
+                <input
+                  type="text"
+                  value={newHeaderKey}
+                  onChange={(e) => setNewHeaderKey(e.target.value)}
+                  placeholder="Header"
+                  className="w-2/5 bg-[#212328] border border-[#606060]/30 rounded-[8px] outline-none px-2.5 py-1.5 text-xs text-[#FFFFFF] placeholder-[#6E6E6E] focus:border-[#E12C2C] transition-all font-mono"
+                />
+                <input
+                  type="text"
+                  value={newHeaderValue}
+                  onChange={(e) => setNewHeaderValue(e.target.value)}
+                  placeholder="Valor"
+                  className="flex-1 bg-[#212328] border border-[#606060]/30 rounded-[8px] outline-none px-2.5 py-1.5 text-xs text-[#FFFFFF] placeholder-[#6E6E6E] focus:border-[#E12C2C] transition-all font-mono"
+                />
+                <button
+                  type="submit"
+                  disabled={!newHeaderKey.trim()}
+                  className="shrink-0 bg-[#E12C2C] hover:opacity-90 disabled:opacity-40 disabled:bg-[#606060] text-white px-2.5 py-1.5 rounded-[8px] transition-all flex items-center justify-center"
+                  title="Agregar header"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </form>
             </div>
           </div>
 
