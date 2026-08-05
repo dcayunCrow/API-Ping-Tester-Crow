@@ -1,11 +1,17 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Plus, Play, Trash2, Activity, AlertCircle, RefreshCw, CheckCircle2, XCircle, Info, X, Sparkles, Bot, Wand2, FileText, Pencil, Check, FileJson } from 'lucide-react';
 
 export default function App() {
-  const [baseUrl, setBaseUrl] = useState('');
-  const [customHeaders, setCustomHeaders] = useState([
-    { id: crypto.randomUUID(), key: 'ngrok-skip-browser-warning', value: '1' }
-  ]);
+  const [baseUrl, setBaseUrl] = useState(() => {
+    return localStorage.getItem('crow_baseUrl') || '';
+  });
+  const [customHeaders, setCustomHeaders] = useState(() => {
+    const saved = localStorage.getItem('crow_customHeaders');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return [{ id: crypto.randomUUID(), key: 'ngrok-skip-browser-warning', value: '1' }];
+  });
   const [newHeaderKey, setNewHeaderKey] = useState('');
   const [newHeaderValue, setNewHeaderValue] = useState('');
   const [newPath, setNewPath] = useState('');
@@ -22,7 +28,37 @@ export default function App() {
   const [editingId, setEditingId] = useState(null);
   const [editPathValue, setEditPathValue] = useState('');
 
-  const [endpoints, setEndpoints] = useState([]);
+  const [endpoints, setEndpoints] = useState(() => {
+    const saved = localStorage.getItem('crow_endpoints');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return parsed.map(ep => ({
+          ...ep,
+          status: null,
+          loading: false,
+          latency: null,
+          errorDetail: null,
+          responseData: null
+        }));
+      } catch (e) {}
+    }
+    return [];
+  });
+
+  // Guardar en localStorage cuando cambien
+  useEffect(() => {
+    localStorage.setItem('crow_baseUrl', baseUrl);
+  }, [baseUrl]);
+
+  useEffect(() => {
+    localStorage.setItem('crow_customHeaders', JSON.stringify(customHeaders));
+  }, [customHeaders]);
+
+  useEffect(() => {
+    const endpointsToSave = endpoints.map(ep => ({ id: ep.id, path: ep.path }));
+    localStorage.setItem('crow_endpoints', JSON.stringify(endpointsToSave));
+  }, [endpoints]);
 
   // Manejar el cambio de la URL base
   const handleBaseUrlChange = (e) => {
